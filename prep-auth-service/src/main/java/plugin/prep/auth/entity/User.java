@@ -5,6 +5,8 @@ import lombok.*;
 
 import static lombok.AccessLevel.*;
 
+import plugin.prep.auth.enums.*;
+
 @Data
 @Builder
 @Entity(name = "users")
@@ -24,7 +26,11 @@ public class User {
     private String email;
 
     @Column
-    private String grade;
+    @Enumerated(EnumType.STRING)
+    private GradeEnum grade;
+
+    @Column
+    private Long learningTrackId;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinTable(name = "user_role",

@@ -13,4 +13,8 @@ public interface UsersApi {
     @Operation(summary = "Получение информации о текущем пользователе")
     UserDto me();
 
+    @PatchMapping("/users/grade")
+    @Operation(summary = "Изменения уровня пользователя")
+    UserDto changeGrade(@RequestBody UserChangeGradeDto request);
+
 }

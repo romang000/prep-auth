@@ -24,6 +24,8 @@ public class UserDto {
     @Schema(description = "Уровень пользователя")
     private String grade;
 
+    private Long learningTrackId;
+
     @Schema(description = "Роль пользователя")
     private String role;
 

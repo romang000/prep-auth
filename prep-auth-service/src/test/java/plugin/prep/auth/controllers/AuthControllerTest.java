@@ -31,7 +31,7 @@ public class AuthControllerTest extends AbstractIT {
         var password = "qwerty123";
 
         var body = """
-            {"email":"%s@example.com", "login":"%s", "password":"%s"}
+            {"email":"%s@example.com", "login":"%s", "password":"%s", "learningTrackId":1}
             """.formatted(login, login, password);
 
         mvc.perform(post("/register")
@@ -58,7 +58,7 @@ public class AuthControllerTest extends AbstractIT {
         var login = "user-" + UUID.randomUUID();
 
         var body = """
-            {"email":"%s@example.com", "login":"%s", "password":"qwerty123"}
+            {"email":"%s@example.com", "login":"%s", "password":"qwerty123", "learningTrackId":1}
             """.formatted(login, login);
 
         var response = mvc.perform(post("/register")
@@ -94,7 +94,7 @@ public class AuthControllerTest extends AbstractIT {
         var login = "user-" + UUID.randomUUID();
 
         var body = """
-            {"email":"%s@example.com", "login":"%s", "password":"qwerty123"}
+            {"email":"%s@example.com", "login":"%s", "password":"qwerty123", "learningTrackId":1}
             """.formatted(login, login);
 
         mvc.perform(post("/register")
@@ -114,6 +114,21 @@ public class AuthControllerTest extends AbstractIT {
         var body = """
             {"email":"bad-email", "login":"", "password":"short"}
             """;
+
+        mvc.perform(post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message", not(blankOrNullString())));
+    }
+
+    @Test
+    public void register_unknown_learning_track_bad_request() throws Exception {
+        var login = "user-" + UUID.randomUUID();
+
+        var body = """
+            {"email":"%s@example.com", "login":"%s", "password":"qwerty123", "learningTrackId":999}
+            """.formatted(login, login);
 
         mvc.perform(post("/register")
                 .contentType(MediaType.APPLICATION_JSON)

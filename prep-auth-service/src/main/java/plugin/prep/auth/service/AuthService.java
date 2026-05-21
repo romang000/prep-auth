@@ -10,6 +10,7 @@ import org.springframework.stereotype.*;
 import org.springframework.transaction.annotation.*;
 
 import plugin.prep.auth.*;
+import plugin.prep.auth.client.learningtrack.*;
 import plugin.prep.auth.dto.*;
 import plugin.prep.auth.entity.*;
 import plugin.prep.auth.exceptions.*;
@@ -35,13 +36,22 @@ public class AuthService {
 
     private final JwtVerifier jwtVerifier;
 
+    private final LearningTracksClient learningTracksClient;
+
     @Transactional
     public AuthDto register(RegisterRequest request) {
         var login = request.getLogin().trim();
         var email = request.getEmail().trim().toLowerCase(Locale.ROOT);
+        var learningTrackId = request.getLearningTrackId();
 
         if (usersRepository.existsByLogin(login) || usersRepository.existsByEmail(email)) {
             throw new UserAlreadyExistsException();
+        }
+
+        if (!learningTrackExists(learningTrackId)) {
+            throw new AuthAppException(
+                "Направление подготовки не найдено",
+                HttpStatus.BAD_REQUEST);
         }
 
         var role = rolesRepository.findByCode(DEFAULT_ROLE_CODE);
@@ -54,6 +64,7 @@ public class AuthService {
         var user = User.builder()
             .login(login)
             .email(email)
+            .learningTrackId(learningTrackId)
             .role(role)
             .build();
         user = usersRepository.save(user);
@@ -143,6 +154,12 @@ public class AuthService {
             .login(user.getLogin())
             .roles(List.of(user.getRole().getCode()))
             .build();
+    }
+
+    private boolean learningTrackExists(Long learningTrackId) {
+        var tracks = learningTracksClient.getAll();
+        return tracks.stream()
+            .anyMatch(track -> learningTrackId.equals(track.getId()));
     }
 
 }

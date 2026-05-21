@@ -29,4 +29,8 @@ public class RegisterRequest {
     @Schema(description = "Пароль пользователя")
     private String password;
 
+    @NotNull
+    @Schema(description = "Идентификатор направления подготовки")
+    private Long learningTrackId;
+
 }

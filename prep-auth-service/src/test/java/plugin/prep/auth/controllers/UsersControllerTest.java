@@ -36,7 +36,7 @@ public class UsersControllerTest extends AbstractIT {
         var email = login + "@example.com";
 
         var body = """
-            {"email":"%s", "login":"%s", "password":"qwerty123"}
+            {"email":"%s", "login":"%s", "password":"qwerty123", "learningTrackId":1}
             """.formatted(email, login);
 
         var response = mvc.perform(post("/register")
@@ -59,6 +59,7 @@ public class UsersControllerTest extends AbstractIT {
             .andExpect(jsonPath("$.email").value(email))
             .andExpect(jsonPath("$.login").value(login))
             .andExpect(jsonPath("$.grade").doesNotExist())
+            .andExpect(jsonPath("$.learningTrackId").value(1))
             .andExpect(jsonPath("$.role").value("USER"));
     }
 

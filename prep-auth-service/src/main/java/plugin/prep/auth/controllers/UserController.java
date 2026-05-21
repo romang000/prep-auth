@@ -9,13 +9,18 @@ import plugin.prep.auth.service.*;
 
 @RestController
 @RequiredArgsConstructor
-public class UsersController implements UsersApi {
+public class UserController implements UsersApi {
 
     private final UsersService usersService;
 
     @Override
     public UserDto me() {
         return usersService.me();
+    }
+
+    @Override
+    public UserDto changeGrade(UserChangeGradeDto request) {
+        return usersService.changeGrade(request);
     }
 
 }
